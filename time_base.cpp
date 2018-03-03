@@ -10,7 +10,7 @@ double now = 0.0;
 class Server
 {
 	private:
-		char name[2];
+		char name[];
 		double minTime = 0.5;
 		double maxTime = 1.0;
 	public:
@@ -21,6 +21,8 @@ class Server
 
 Server::Server(const char* inname)
 {
+	//initialize Server.
+	//
 	strcpy(name, inname);
 };
 
@@ -28,13 +30,17 @@ class Request
 {
 	public:
 		Request();
-		char label[2];
+		char label[];
 		double arrivalInterval;
 		bool isRejected;
 };
 
 Request::Request()
 {
+	//label Request with A or B using uniform init distribution class in std::random library.
+	//generate arrivalinterval of each request using exponential distribution class in std::random library.
+	//
+	//
 	random_device seed_gen;
 	mt19937 engine1(seed_gen());
 
@@ -52,17 +58,19 @@ Request::Request()
 			break;
 	}
 
-	// requests arrive in exponential distribution.
-	//
 	mt19937 engine2(seed_gen());
 
 	exponential_distribution<> exp (1.0);
+
+	//requests arrive in exponential distribution.
+	
 	arrivalInterval = exp(engine2);
 
 };
 
 double Server::getEndTime(const char* inlabel)
 {
+	//get completion time of the Server.
 	if(strcasecmp(name, inlabel) != 0)
 	{
 		return now + maxTime;
@@ -75,22 +83,24 @@ double Server::getEndTime(const char* inlabel)
 
 int main()
 {
-	//initialize servers and requests.
+	//conttruct servers.
 	Server serverA("a");
 	Server serverB("b");
 	
 	int numberofRequests = 10000;
 	
+	//construct requests.
 	Request *request = new Request[numberofRequests];
 
-	int counter = 0;
-	int reject = 0;
+	int counter = 0;//request counter.
+	int reject = 0;//rejected request counter.
 
 	while (counter < numberofRequests)
 	{
 		Server* selectedServer;
 		switch (counter % numberofServers)
 		{
+			//select the next server by round robin.
 			case 0:
 				selectedServer = &serverA;
 				break;
@@ -101,6 +111,7 @@ int main()
 
 		if (now >= selectedServer->endTime)
 		{
+			//the request has arrived before the completion time.
 			request[counter].isRejected = false;
 			now += request[counter].arrivalInterval;
 			selectedServer->endTime = selectedServer->getEndTime(request[counter].label);
