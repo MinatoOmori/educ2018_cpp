@@ -40,11 +40,10 @@ Request::Request()
 	//label Request with A or B using uniform init distribution class in std::random library.
 	//generate arrivalinterval of each request using exponential distribution class in std::random library.
 	//
-	//
 	random_device seed_gen;
 	mt19937 engine1(seed_gen());
 
-	uniform_int_distribution<> dice(0, numberofServers);
+	uniform_int_distribution<> dice(0, numberofServers - 1);
 	
 	//request labels are random.
 	

@@ -6,11 +6,11 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char* argv[])
 {
 	int answer[100] = {};
 
-	ifstream ifs("braincode.txt");
+	ifstream ifs(argv[1]);
 	if (!ifs)
 	{
 		cout<<"text file error."<<endl;
