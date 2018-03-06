@@ -58,13 +58,11 @@ Request::Request()
 			break;
 	}
 
-	mt19937 engine2(seed_gen());
-
 	exponential_distribution<> exp (1.0);
 
 	//requests arrive in exponential distribution.
 	
-	arrivalInterval = exp(engine2);
+	arrivalInterval = exp(engine1);
 
 };
 
@@ -109,17 +107,17 @@ int main()
 				break;
 		}
 
+		now += request[counter].arrivalInterval;
+
 		if (now >= selectedServer->endTime)
 		{
 			//the request has arrived before the completion time.
 			request[counter].isRejected = false;
-			now += request[counter].arrivalInterval;
 			selectedServer->endTime = selectedServer->getEndTime(request[counter].label);
 		}
 		else
 		{
 			request[counter].isRejected = true;
-			now += request[counter].arrivalInterval;
 			reject++;
 		}
 
